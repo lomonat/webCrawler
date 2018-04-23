@@ -7,13 +7,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.io.File;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Crawler {
     public String word;
     private static final int MAX_DEPTH = 2;
-    public static HashSet<String> links = new HashSet<String>();
-    Reader reader = new Reader();
+    List<String> linksOrigin = new ArrayList<>();
+    List<String> links = new ArrayList<>();
     Writer writer = new Writer();
 
     public Crawler(String word) throws IOException {
@@ -21,28 +24,32 @@ public class Crawler {
     }
 
     public void searchTroughLinks () throws IOException {
+        System.out.println("Begin the process");
+        writer.writeProcessTofile("Starting the process of crawling");
+
         String fs = System.getProperty("file.separator");
-        String[] links = new String[0];
         try {
-            links = reader.readLines("files"+ fs + "links.txt");
-            System.out.println(links.toString());
+            Scanner s = new Scanner(new File("files"+ fs + "links.txt"));
+            while (s.hasNext()){
+                linksOrigin.add(s.next());
+            }
+            s.close();
+            System.out.println(linksOrigin.toString());
         } catch (IOException e) {
             System.out.println(e);
         }
-      //  for (String o : links) {
-        for (int i=0; i< links.length; i++) {
-              //  getPageLinks(o, 0);
-                getPageLinks(links[i], 0);
-
-                System.out.println ("Searching...");
-
+        for(Object o : linksOrigin) {
+            System.out.println ("Searching..." + o);
+            getPageLinks((String) o, 0);
         }
-      //  writer.cleanUp();
+        writer.writeProcessTofile("The end");
         System.out.println("The end");
+        writer.cleanUp();
     }
 
     public void getPageLinks(String URL, int depth)  {
         //4. Check if you have already crawled the URLs
+
         if ((!links.contains(URL))  && (depth < MAX_DEPTH) && URL != null && URL.length() != 0) {
             try {
                 //4. (i) If not add it to the index

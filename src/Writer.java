@@ -21,6 +21,12 @@ public class Writer {
         fw.flush();
     }
 
+    public void writeProcessTofile(String process) throws IOException {
+        fw.write(process);
+        fw.write('\n');
+        fw.flush();
+    }
+
     public void cleanUp() throws IOException {
         fw.close();
     }

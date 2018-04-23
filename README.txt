@@ -12,4 +12,7 @@ your next command will look like
 
 java -cp out/production/Task_3/:lib/jsoup-1.11.3.jar Main elephant 5
 
+Please note, that before each new iteration, the old results will be deleted - so by each iteartion you will get fresh results
+(if the word was deleted from the page at the time of new iteration, it won' appear in th textfile)
+
 You will find the output in the file out.txt in Task_3/files/out.txt
