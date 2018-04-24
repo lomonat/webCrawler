@@ -11,6 +11,8 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Crawler {
     public String word;
@@ -55,7 +57,7 @@ public class Crawler {
                 //4. (i) If not add it to the index
                 Document document = Jsoup.connect(URL).get();
                 if (links.add(URL)) {
-                    if(searchForWord(this.word, document)){
+                    if(searchForWord(document, this.word)){
                         writer.writeTofile(this.word, URL);
                     };
                 }
@@ -74,14 +76,25 @@ public class Crawler {
         }
     }
 
-    // check if text of document contains word
-    public boolean searchForWord(String searchWord, Document text)
+    // check if text of document contains word and set the flag
+    public boolean searchForWord(Document text, String searchWord)
     {
         boolean flag = false;
         String bodyText = text.body().text();
         if (bodyText != null) {
-            flag =  bodyText.toLowerCase().contains(searchWord.toLowerCase());
+           // flag =  bodyText.toLowerCase().contains(searchWord.toLowerCase());
+            flag = isContain( bodyText.toLowerCase(), searchWord.toLowerCase());
         }
         return flag;
+    }
+    // Please note, that with help of Regex and word boundary it will be searched for exact word
+    //it means if your search for "elephants", all results with "elephant" won' be shown (plural)
+    //if you want to find all form of words and words, which are containing subItem, please comment out the line in the method
+    //searchForWord and comment the next line after (invert lines)
+    private static boolean isContain(String source, String subItem){
+        String pattern = "\\b"+subItem+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(source);
+        return m.find();
     }
 }
